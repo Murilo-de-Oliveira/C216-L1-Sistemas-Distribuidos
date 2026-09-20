@@ -11,6 +11,9 @@ install:
 test:
 	$(PYTEST)
 
+test-cov:
+	$(PYTEST) --cov=app --cov-report=term-missing
+
 lint:
 	$(POETRY) ruff check .
 
@@ -18,7 +21,7 @@ format:
 	$(POETRY) ruff format .
 
 run:
-	$(POETRY) uvicorn src.app.main:app --reload
+	$(POETRY) uvicorn app.main:app --reload
 
 docker-build:
 	$(COMPOSE) build --no-cache
@@ -42,6 +45,7 @@ help:
 	@echo "Comandos disponíveis:"
 	@echo "  make install    - instala dependências"
 	@echo "  make test       - executa testes"
+	@echo "  make test-cov   - executa testes e exibe a cobertura deles"
 	@echo "  make lint       - verifica código"
 	@echo "  make format     - formata código"
 	@echo "  make run        - inicia servidor"

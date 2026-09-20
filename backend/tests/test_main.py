@@ -52,4 +52,3 @@ def test_hello_parametrized(client, name, expected_message):
 def test_without_name_returns_404(client):
     response = client.get("/hello/")
     assert response.status_code == 404
-

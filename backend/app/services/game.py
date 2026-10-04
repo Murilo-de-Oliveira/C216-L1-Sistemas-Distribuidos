@@ -31,7 +31,9 @@ class GameService:
     def _get_or_404(self, game_id: int) -> GameOut:
         game = self._games.get(game_id)
         if game is None:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada")
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
+            )
         return game
 
     def list_games(
@@ -70,7 +72,9 @@ class GameService:
     def replace_game(self, game_id: int, data: GameCreate) -> GameOut:
         existing = self._get_or_404(game_id)
         payload = data.model_dump()
-        payload["played_at"] = _as_utc(data.played_at) if data.played_at else existing.played_at
+        payload["played_at"] = (
+            _as_utc(data.played_at) if data.played_at else existing.played_at
+        )
         game = GameOut(id=game_id, **payload)
         self._games[game_id] = game
         return game

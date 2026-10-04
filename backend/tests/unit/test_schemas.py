@@ -43,7 +43,9 @@ def test_duplicate_tags_are_removed_keeping_order():
 def test_game_patch_tracks_only_sent_fields_and_rejects_null_on_required():
     assert GamePatch().model_dump(exclude_unset=True) == {}
     assert GamePatch(notes="nova").model_dump(exclude_unset=True) == {"notes": "nova"}
-    assert GamePatch(opening=None).model_dump(exclude_unset=True) == {"opening": None}  # limpar é permitido
+    assert GamePatch(opening=None).model_dump(exclude_unset=True) == {
+        "opening": None
+    }  # limpar é permitido
 
     for field in ["color", "result", "time_control", "error_tags", "played_at"]:
         with pytest.raises(ValidationError):

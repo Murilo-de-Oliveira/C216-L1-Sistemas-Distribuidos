@@ -34,7 +34,9 @@ class GameRepository:
         if existing is None:
             return None
         payload = data.model_dump()
-        payload["played_at"] = _as_utc(data.played_at) if data.played_at else existing.played_at
+        payload["played_at"] = (
+            _as_utc(data.played_at) if data.played_at else existing.played_at
+        )
         game = GameOut(id=game_id, **payload)
         self._games[game_id] = game
         return game

@@ -88,7 +88,9 @@ class GameStats(BaseModel):
     wins: int
     losses: int
     draws: int
-    win_rate: float | None = Field(None, description="Vitórias / total (0 a 1); nulo se não há partidas")
+    win_rate: float | None = Field(
+        None, description="Vitórias / total (0 a 1); nulo se não há partidas"
+    )
     error_tag_counts: dict[ErrorTag, int] = Field(
         description="Quantas partidas tiveram cada tag, da mais frequente para a menos"
     )

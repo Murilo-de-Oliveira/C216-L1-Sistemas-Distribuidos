@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.routers import game
 
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Chess Games API",
@@ -10,5 +11,6 @@ def create_app() -> FastAPI:
     )
     app.include_router(game.router)
     return app
+
 
 app = create_app()

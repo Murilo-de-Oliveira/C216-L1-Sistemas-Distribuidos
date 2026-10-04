@@ -6,9 +6,27 @@ from app.main import create_app
 def test_list_games_with_filters_ordering_and_pagination(client, create_game):
     assert client.get("/games").json() == []
 
-    a = create_game(result="win", color="white", time_control="rapid", error_tags=[], played_at="2026-01-01T10:00:00Z")
-    b = create_game(result="loss", color="black", time_control="blitz", error_tags=["time_trouble"], played_at="2026-03-01T10:00:00Z")
-    c = create_game(result="loss", color="white", time_control="blitz", error_tags=["hanging_piece"], played_at="2026-02-01T10:00:00Z")
+    a = create_game(
+        result="win",
+        color="white",
+        time_control="rapid",
+        error_tags=[],
+        played_at="2026-01-01T10:00:00Z",
+    )
+    b = create_game(
+        result="loss",
+        color="black",
+        time_control="blitz",
+        error_tags=["time_trouble"],
+        played_at="2026-03-01T10:00:00Z",
+    )
+    c = create_game(
+        result="loss",
+        color="white",
+        time_control="blitz",
+        error_tags=["hanging_piece"],
+        played_at="2026-02-01T10:00:00Z",
+    )
 
     def ids(**params):
         response = client.get("/games", params=params)
@@ -26,7 +44,13 @@ def test_list_games_with_filters_ordering_and_pagination(client, create_game):
 
 
 def test_list_games_rejects_invalid_query_params(client):
-    invalid = [{"result": "invalid"}, {"error_tag": "nope"}, {"limit": 0}, {"limit": 101}, {"offset": -1}]
+    invalid = [
+        {"result": "invalid"},
+        {"error_tag": "nope"},
+        {"limit": 0},
+        {"limit": 101},
+        {"offset": -1},
+    ]
     for params in invalid:
         assert client.get("/games", params=params).status_code == 422
 
@@ -44,7 +68,10 @@ def test_stats_endpoint(client, create_game):
     body = client.get("/games/stats").json()
     assert (body["total"], body["wins"], body["losses"], body["draws"]) == (4, 1, 2, 1)
     assert body["win_rate"] == 0.25
-    assert list(body["error_tag_counts"].items()) == [("time_trouble", 2), ("hanging_piece", 1)]
+    assert list(body["error_tag_counts"].items()) == [
+        ("time_trouble", 2),
+        ("hanging_piece", 1),
+    ]
 
 
 def test_get_game_by_id(client, create_game):
@@ -88,29 +115,47 @@ def test_put_replaces_the_whole_game(client, create_game):
     assert response.status_code == 200
     body = response.json()
     assert body["id"] == game["id"]
-    assert (body["color"], body["result"], body["time_control"]) == ("black", "win", "rapid")
+    assert (body["color"], body["result"], body["time_control"]) == (
+        "black",
+        "win",
+        "rapid",
+    )
     assert body["opening"] is None and body["error_tags"] == []
     assert body["played_at"] == game["played_at"]
     assert client.get(f"/games/{game['id']}").json() == body
 
-    assert client.put(f"/games/{game['id']}", json={"color": "white"}).status_code == 422
+    assert (
+        client.put(f"/games/{game['id']}", json={"color": "white"}).status_code == 422
+    )
 
 
 def test_patch_changes_only_sent_fields(client, create_game):
     game = create_game()
 
-    body = client.patch(f"/games/{game['id']}", json={"notes": "Faltou atenção."}).json()
+    body = client.patch(
+        f"/games/{game['id']}", json={"notes": "Faltou atenção."}
+    ).json()
     assert body["notes"] == "Faltou atenção."
-    assert body["opening"] == game["opening"] and body["error_tags"] == game["error_tags"]
+    assert (
+        body["opening"] == game["opening"] and body["error_tags"] == game["error_tags"]
+    )
 
-    assert client.patch(f"/games/{game['id']}", json={"opening": None}).json()["opening"] is None
+    assert (
+        client.patch(f"/games/{game['id']}", json={"opening": None}).json()["opening"]
+        is None
+    )
     assert client.patch(f"/games/{game['id']}", json={}).json()["opening"] is None
     assert client.get(f"/games/{game['id']}").json()["notes"] == "Faltou atenção."
 
 
 def test_patch_rejects_invalid_values(client, create_game):
     game = create_game()
-    for body in [{"result": None}, {"error_tags": None}, {"opponent_rating": 9999}, {"result": "won"}]:
+    for body in [
+        {"result": None},
+        {"error_tags": None},
+        {"opponent_rating": 9999},
+        {"result": "won"},
+    ]:
         assert client.patch(f"/games/{game['id']}", json=body).status_code == 422
 
 

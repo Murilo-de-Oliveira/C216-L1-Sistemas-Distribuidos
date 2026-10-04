@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+from app.routers import game
 
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title="Chess Games API",
+        description="Registro de partidas de xadrez com tags de erro.",
+        version="1.0.0",
+    )
+    app.include_router(game.router)
+    return app
 
-@app.get("/")
-def home():
-    return {"message": "Olá, Sistemas Distribuídos"}
-
-
-@app.get("/hello/{name}")
-def hello(name: str):
-    return {"message": f"Olá, {name}"}
+app = create_app()

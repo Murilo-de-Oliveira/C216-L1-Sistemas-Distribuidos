@@ -1,13 +1,6 @@
 import pytest
 
 
-def pytest_collection_modifyitems(items):
-    for item in items:
-        folder = item.path.parent.name
-        if folder in {"unit", "integration"}:
-            item.add_marker(getattr(pytest.mark, folder))
-
-
 @pytest.fixture
 def payload() -> dict:
     return {

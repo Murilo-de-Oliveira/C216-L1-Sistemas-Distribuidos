@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from fastapi import HTTPException
@@ -11,7 +11,7 @@ def make(payload, **overrides) -> GameCreate:
 
 
 def utc(month: int) -> datetime:
-    return datetime(2026, month, 1, tzinfo=timezone.utc)
+    return datetime(2026, month, 1, tzinfo=UTC)
 
 
 def test_create_assigns_incremental_ids_and_utc_dates(service, payload):
@@ -20,7 +20,7 @@ def test_create_assigns_incremental_ids_and_utc_dates(service, payload):
 
     assert (first.id, second.id) == (1, 2)
     assert first.played_at.tzinfo is not None
-    assert second.played_at == datetime(2026, 1, 1, 12, 0, tzinfo=timezone.utc)
+    assert second.played_at == datetime(2026, 1, 1, 12, 0, tzinfo=UTC)
 
 
 def test_list_applies_filters_sorting_and_pagination(service, payload):
@@ -97,7 +97,7 @@ def test_patch_changes_only_sent_fields(service, game_data):
     naive = service.patch_game(
         original.id, GamePatch(played_at=datetime(2026, 5, 1, 8, 0))
     )
-    assert naive.played_at == datetime(2026, 5, 1, 8, 0, tzinfo=timezone.utc)
+    assert naive.played_at == datetime(2026, 5, 1, 8, 0, tzinfo=UTC)
 
 
 def test_delete_removes_game_and_unknown_ids_raise_404(service, game_data):

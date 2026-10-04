@@ -1,10 +1,10 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from app.schemas.game import Color, ErrorTag, GameCreate, Result, TimeControl
 
 
 def _dt(day: int, hour: int) -> datetime:
-    return datetime(2026, 9, day, hour, 0, tzinfo=timezone.utc)
+    return datetime(2026, 9, day, hour, 0, tzinfo=UTC)
 
 
 SEED_GAMES: list[GameCreate] = [

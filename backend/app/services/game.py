@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Iterable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
 
@@ -18,7 +18,7 @@ from app.services.seed import SEED_GAMES
 
 
 def _as_utc(value: datetime) -> datetime:
-    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
+    return value.replace(tzinfo=UTC) if value.tzinfo is None else value
 
 
 class GameService:
@@ -63,7 +63,7 @@ class GameService:
 
     def create_game(self, data: GameCreate) -> GameOut:
         payload = data.model_dump()
-        payload["played_at"] = _as_utc(data.played_at or datetime.now(timezone.utc))
+        payload["played_at"] = _as_utc(data.played_at or datetime.now(UTC))
         game = GameOut(id=self._next_id, **payload)
         self._games[game.id] = game
         self._next_id += 1

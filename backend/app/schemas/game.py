@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Color(str, Enum):
@@ -79,6 +79,7 @@ class GamePatch(BaseModel):
 
 
 class GameOut(GameBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     played_at: datetime
 

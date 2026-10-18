@@ -1,16 +1,14 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from app.database.connection import get_session
 from app.main import create_app
-from app.routers.game import get_service
-from app.services.game import GameService
 
 
 @pytest.fixture
-def client() -> TestClient:
-    service = GameService()
+def client(session) -> TestClient:
     app = create_app()
-    app.dependency_overrides[get_service] = lambda: service
+    app.dependency_overrides[get_session] = lambda: session
     return TestClient(app)
 
 

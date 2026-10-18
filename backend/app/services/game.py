@@ -1,20 +1,19 @@
 from collections import Counter
-from collections.abc import Iterable
 from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
 
+from app.models.models import Game
+from app.repositories.game import GameRepository
 from app.schemas.game import (
     Color,
     ErrorTag,
     GameCreate,
-    GameOut,
     GamePatch,
     GameStats,
     Result,
     TimeControl,
 )
-from app.services.seed import SEED_GAMES
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -22,18 +21,16 @@ def _as_utc(value: datetime) -> datetime:
 
 
 class GameService:
-    def __init__(self, seed: Iterable[GameCreate] = ()) -> None:
-        self._games: dict[int, GameOut] = {}
-        self._next_id = 1
-        for data in seed:
-            self.create_game(data)
+    def __init__(self, repo: GameRepository) -> None:
+        self.repo = repo
 
-    def _get_or_404(self, game_id: int) -> GameOut:
-        game = self._games.get(game_id)
+    def _get_or_404(self, game_id: int) -> Game:
+        game = self.repo.get(game_id)
         if game is None:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
             )
+
         return game
 
     def list_games(
@@ -45,8 +42,8 @@ class GameService:
         error_tag: ErrorTag | None = None,
         limit: int = 20,
         offset: int = 0,
-    ) -> list[GameOut]:
-        games = list(self._games.values())
+    ) -> list[Game]:
+        games = self.repo.list_all()
         if result is not None:
             games = [g for g in games if g.result == result]
         if color is not None:
@@ -54,49 +51,46 @@ class GameService:
         if time_control is not None:
             games = [g for g in games if g.time_control == time_control]
         if error_tag is not None:
-            games = [g for g in games if error_tag in g.error_tags]
+            games = [g for g in games if error_tag in (g.error_tags or [])]
         games.sort(key=lambda g: g.played_at, reverse=True)
         return games[offset : offset + limit]
 
-    def get_game(self, game_id: int) -> GameOut:
+    def get_game(self, game_id: int) -> Game:
         return self._get_or_404(game_id)
 
-    def create_game(self, data: GameCreate) -> GameOut:
+    def create_game(self, data: GameCreate) -> Game:
         payload = data.model_dump()
         payload["played_at"] = _as_utc(data.played_at or datetime.now(UTC))
-        game = GameOut(id=self._next_id, **payload)
-        self._games[game.id] = game
-        self._next_id += 1
+        return self.repo.add(payload)
+
+    def replace_game(self, game_id: int, data: GameCreate) -> Game:
+        game = self.repo.replace(game_id, data)
+        if game is None:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
+            )
         return game
 
-    def replace_game(self, game_id: int, data: GameCreate) -> GameOut:
-        existing = self._get_or_404(game_id)
-        payload = data.model_dump()
-        payload["played_at"] = (
-            _as_utc(data.played_at) if data.played_at else existing.played_at
-        )
-        game = GameOut(id=game_id, **payload)
-        self._games[game_id] = game
-        return game
-
-    def patch_game(self, game_id: int, patch: GamePatch) -> GameOut:
-        existing = self._get_or_404(game_id)
+    def patch_game(self, game_id: int, patch: GamePatch) -> Game:
         changes = patch.model_dump(exclude_unset=True)
-        if "played_at" in changes:
-            changes["played_at"] = _as_utc(changes["played_at"])
-        game = existing.model_copy(update=changes)
-        self._games[game_id] = game
+        game = self.repo.update(game_id, changes)
+        if game is None:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
+            )
         return game
 
     def delete_game(self, game_id: int) -> None:
-        self._get_or_404(game_id)
-        del self._games[game_id]
+        if not self.repo.delete(game_id):
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
+            )
 
     def stats(self) -> GameStats:
-        games = list(self._games.values())
+        games = self.repo.list_all()
         total = len(games)
         wins = sum(g.result == Result.WIN for g in games)
-        tag_counts = Counter(tag for g in games for tag in g.error_tags)
+        tag_counts = Counter(tag for g in games for tag in (g.error_tags or []))
         return GameStats(
             total=total,
             wins=wins,
@@ -105,6 +99,3 @@ class GameService:
             win_rate=round(wins / total, 4) if total else None,
             error_tag_counts=dict(tag_counts.most_common()),
         )
-
-
-game_service = GameService(SEED_GAMES)

@@ -1,7 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, Query, status
+from fastapi import APIRouter, Path, Query, status
 
+from app.depencencies import GameServiceDep
 from app.schemas.game import (
     Color,
     ErrorTag,
@@ -12,23 +13,17 @@ from app.schemas.game import (
     Result,
     TimeControl,
 )
-from app.services.game import GameService, game_service
 
 router = APIRouter(prefix="/games", tags=["games"])
 
-
-def get_service() -> GameService:
-    return game_service
-
-
-ServiceDep = Annotated[GameService, Depends(get_service)]
-GameId = Annotated[int, Path(ge=1, description="Identificador da partida")]
 NOT_FOUND = {404: {"description": "Partida não encontrada"}}
+
+GameId = Annotated[int, Path(ge=1, description="ID da partida")]
 
 
 @router.get("", response_model=list[GameOut], summary="Lista partidas com filtros")
 def list_games(
-    service: ServiceDep,
+    service: GameServiceDep,
     result: Annotated[Result | None, Query(description="Filtra pelo resultado")] = None,
     color: Annotated[
         Color | None, Query(description="Filtra pela cor das peças")
@@ -53,7 +48,7 @@ def list_games(
 
 
 @router.get("/stats", response_model=GameStats, summary="Estatísticas gerais")
-def get_stats(service: ServiceDep):
+def get_stats(service: GameServiceDep):
     return service.stats()
 
 
@@ -63,7 +58,7 @@ def get_stats(service: ServiceDep):
     responses=NOT_FOUND,
     summary="Busca uma partida",
 )
-def get_game(game_id: GameId, service: ServiceDep):
+def get_game(game_id: GameId, service: GameServiceDep):
     return service.get_game(game_id)
 
 
@@ -73,7 +68,7 @@ def get_game(game_id: GameId, service: ServiceDep):
     status_code=status.HTTP_201_CREATED,
     summary="Registra uma partida",
 )
-def create_game(data: GameCreate, service: ServiceDep):
+def create_game(data: GameCreate, service: GameServiceDep):
     return service.create_game(data)
 
 
@@ -83,7 +78,7 @@ def create_game(data: GameCreate, service: ServiceDep):
     responses=NOT_FOUND,
     summary="Substitui a partida inteira",
 )
-def replace_game(game_id: GameId, data: GameCreate, service: ServiceDep):
+def replace_game(game_id: GameId, data: GameCreate, service: GameServiceDep):
     return service.replace_game(game_id, data)
 
 
@@ -93,7 +88,7 @@ def replace_game(game_id: GameId, data: GameCreate, service: ServiceDep):
     responses=NOT_FOUND,
     summary="Atualiza campos da partida",
 )
-def patch_game(game_id: GameId, data: GamePatch, service: ServiceDep):
+def patch_game(game_id: GameId, data: GamePatch, service: GameServiceDep):
     return service.patch_game(game_id, data)
 
 
@@ -103,5 +98,5 @@ def patch_game(game_id: GameId, data: GamePatch, service: ServiceDep):
     responses=NOT_FOUND,
     summary="Remove a partida",
 )
-def delete_game(game_id: GameId, service: ServiceDep) -> None:
+def delete_game(game_id: GameId, service: GameServiceDep) -> None:
     service.delete_game(game_id)

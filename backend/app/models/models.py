@@ -1,12 +1,9 @@
 from datetime import datetime
 
-from schemas.game import Color, Result, TimeControl
+from app.schemas.game import Color, Result, TimeControl
 from sqlalchemy import JSON, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
-
-class Base(DeclarativeBase):
-    pass
+from app.database.base import Base
 
 
 class Game(Base):

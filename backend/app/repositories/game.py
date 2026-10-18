@@ -1,7 +1,10 @@
 from collections.abc import Iterable
 from datetime import UTC, datetime
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from app.schemas.game import GameCreate, GameOut
+from app.models.models import Game
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -9,47 +12,64 @@ def _as_utc(value: datetime) -> datetime:
 
 
 class GameRepository:
-    def __init__(self, seed: Iterable[GameCreate] = ()) -> None:
-        self._games: dict[int, GameOut] = {}
-        self._next_id = 1
-        for game in seed:
-            self.add(game)
+    def __init__(self, session: Session) -> None:
+        self.session = session
 
-    def list_all(self) -> list[GameOut]:
-        return list(self._games.values())
+    def list_all(self) -> list[Game]:
+        return list(self.session.scalars(select(Game)).all())
 
-    def get(self, game_id: int) -> GameOut | None:
-        return self._games.get(game_id)
+    def get(self, game_id: int) -> Game | None:
+        return self.session.get(Game, game_id)
 
-    def add(self, data: GameCreate) -> GameOut:
-        payload = data.model_dump()
-        payload["played_at"] = _as_utc(data.played_at or datetime.now(UTC))
-        game = GameOut(id=self._next_id, **payload)
-        self._games[game.id] = game
-        self._next_id += 1
+    def add(self, payload) -> Game:
+        game = Game(**payload)
+        
+        self.session.add(game)
+        self.session.commit()
+        self.session.refresh(game)
+        
         return game
 
-    def replace(self, game_id: int, data: GameCreate) -> GameOut | None:
-        existing = self._games.get(game_id)
-        if existing is None:
+    def replace(self, game_id: int, data: GameCreate) -> Game | None:
+        game = self.session.get(Game, game_id)
+        if game is None:
             return None
+        
         payload = data.model_dump()
         payload["played_at"] = (
-            _as_utc(data.played_at) if data.played_at else existing.played_at
+            _as_utc(data.played_at) if data.played_at else game.played_at
         )
-        game = GameOut(id=game_id, **payload)
-        self._games[game_id] = game
+        for field, value in payload.items():
+            setattr(game, field, value)
+
+        self.session.commit()
+        self.session.refresh(game)
+        
         return game
 
-    def update(self, game_id: int, changes: dict) -> GameOut | None:
-        existing = self._games.get(game_id)
-        if existing is None:
+    def update(self, game_id: int, changes: dict) -> Game | None:
+        game = self.session.get(Game, game_id)
+        if game is None:
             return None
-        if "played_at" in changes:
+        
+        if "played_at" in changes and changes["played_at"] is not None:
             changes = {**changes, "played_at": _as_utc(changes["played_at"])}
-        game = existing.model_copy(update=changes)
-        self._games[game_id] = game
+        
+        for field, value in changes.items():
+            setattr(game, field, value)
+        
+        self.session.commit()
+        self.session.refresh(game)
+        
         return game
 
     def delete(self, game_id: int) -> bool:
-        return self._games.pop(game_id, None) is not None
+        game = self.session.get(Game, game_id)
+        if game is None:
+            return False
+        
+        self.session.delete(game)
+        self.session.commit()
+        
+        return True
+    

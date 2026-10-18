@@ -1,17 +1,14 @@
 from collections import Counter
-from collections.abc import Iterable
 from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+
 from app.models.models import Game
 from app.repositories.game import GameRepository
-
 from app.schemas.game import (
     Color,
     ErrorTag,
     GameCreate,
-    GameOut,
     GamePatch,
     GameStats,
     Result,

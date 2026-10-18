@@ -2,9 +2,10 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.repositories.game import GameRepository
 from app.database.connection import SessionDep
+from app.repositories.game import GameRepository
 from app.services.game import GameService
+
 
 def get_game_repository(session: SessionDep) -> GameRepository:
     return GameRepository(session)

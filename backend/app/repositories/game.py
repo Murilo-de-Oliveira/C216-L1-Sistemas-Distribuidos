@@ -1,10 +1,10 @@
-from collections.abc import Iterable
 from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.schemas.game import GameCreate, GameOut
+
 from app.models.models import Game
+from app.schemas.game import GameCreate
 
 
 def _as_utc(value: datetime) -> datetime:

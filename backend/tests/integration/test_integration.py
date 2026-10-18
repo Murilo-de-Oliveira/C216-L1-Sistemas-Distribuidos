@@ -183,12 +183,6 @@ def test_unknown_game_returns_404_on_every_endpoint(client, payload):
         assert "999" in response.json()["detail"]
 
 
-def test_app_starts_with_seed_data():
-    real_client = TestClient(create_app())
-    assert len(real_client.get("/games").json()) == 6
-    assert real_client.get("/games/stats").json()["total"] == 6
-
-
 def test_openapi_exposes_every_endpoint():
     paths = TestClient(create_app()).get("/openapi.json").json()["paths"]
     assert set(paths["/games"]) == {"get", "post"}

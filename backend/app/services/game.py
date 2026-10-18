@@ -30,7 +30,7 @@ class GameService:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, f"Partida {game_id} não encontrada"
             )
-        
+
         return game
 
     def list_games(

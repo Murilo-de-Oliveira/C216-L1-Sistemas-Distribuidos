@@ -5,7 +5,7 @@ export const NOTES_MAX_LENGTH = 500;
 export const RATING_MAX = 3500;
 
 export function validateGame({
-    title,
+    title = "",
     color,
     result,
     time_control,

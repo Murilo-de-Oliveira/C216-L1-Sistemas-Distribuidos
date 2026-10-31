@@ -15,7 +15,22 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended"
+			"preset": "recommended",
+			"a11y": {
+				"noLabelWithoutControl": {
+					"level": "error",
+					"options": {
+						"labelComponents": [
+							"Label"
+						],
+						"inputComponents": [
+							"Input",
+							"Textarea",
+							"Select"
+						]
+					}
+				}
+			}
 		}
 	},
 	"javascript": {
@@ -30,5 +45,24 @@
 				"organizeImports": "on"
 			}
 		}
-	}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
+	"overrides": [
+		{
+			"includes": [
+				"src/components/ui/**"
+			],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"noLabelWithoutControl": "off"
+					}
+				}
+			}
+		}
+	]
 }

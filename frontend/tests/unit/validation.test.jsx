@@ -1,5 +1,5 @@
-import { validateGame } from "@/components/validation";
 import { describe, expect, it } from "vitest";
+import { validateGame } from "@/components/validation";
 
 const required = {
 	title: "title",

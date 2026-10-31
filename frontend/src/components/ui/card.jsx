@@ -1,4 +1,3 @@
-import * as React from "react"
 import { cn } from "cn"
 
 function Card({
@@ -107,11 +106,6 @@ function CardFooter({
 }
 
 export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardAction,
-  CardDescription,
-  CardContent,
+  Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
 }
+

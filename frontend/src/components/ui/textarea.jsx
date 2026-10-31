@@ -1,4 +1,4 @@
-import * as React from "react"
+
 import { cn } from "cn"
 
 function Textarea({
@@ -18,3 +18,4 @@ function Textarea({
 }
 
 export { Textarea }
+

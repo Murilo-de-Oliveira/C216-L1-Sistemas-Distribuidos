@@ -105,6 +105,7 @@ help:
 	@echo "  make db-history   - lista o histórico de migrations"
 	@echo "  make db-migration MSG=\"desc\" - cria uma nova migration"
 	@echo "Comandos Frontend:"
+	@echo "  make frontend-install  - instala as dependências do frontend"
 	@echo "  make frontend-dev      - inicia o frontend local"
 	@echo "  make frontend-lint     - verifica os arquivos do frontend"
 	@echo "  make frontend-format   - formata os arquivos do frontend"

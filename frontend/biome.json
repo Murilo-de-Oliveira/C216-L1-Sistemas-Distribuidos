@@ -6,7 +6,16 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/coverage",
+			"!**/playwright-report",
+			"!**/test-results",
+			"!**/package-lock.json"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -20,8 +29,14 @@
 				"noLabelWithoutControl": {
 					"level": "error",
 					"options": {
-						"labelComponents": ["Label"],
-						"inputComponents": ["Input", "Textarea", "Select"]
+						"labelComponents": [
+							"Label"
+						],
+						"inputComponents": [
+							"Input",
+							"Textarea",
+							"Select"
+						]
 					}
 				}
 			}
@@ -47,7 +62,9 @@
 	},
 	"overrides": [
 		{
-			"includes": ["src/components/ui/**"],
+			"includes": [
+				"src/components/ui/**"
+			],
 			"linter": {
 				"rules": {
 					"a11y": {

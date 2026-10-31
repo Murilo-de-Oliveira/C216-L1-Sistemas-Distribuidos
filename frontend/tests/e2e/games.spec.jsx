@@ -24,7 +24,9 @@ test("cadastra uma partida e a exibe na lista", async ({ page }) => {
 	await page.goto("/");
 
 	await fillRequired(page, title);
-	await page.getByRole("textbox", { name: "Abertura", exact: true }).fill("Ruy Lopez");
+	await page
+		.getByRole("textbox", { name: "Abertura", exact: true })
+		.fill("Ruy Lopez");
 	await page.getByLabel("PGN").fill(PGN);
 	await page.getByRole("button", { name: "Adicionar partida" }).click();
 

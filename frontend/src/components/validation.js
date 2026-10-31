@@ -5,6 +5,7 @@ export const NOTES_MAX_LENGTH = 500;
 export const RATING_MAX = 3500;
 
 export function validateGame({
+    title,
     color,
     result,
     time_control,
@@ -12,6 +13,7 @@ export function validateGame({
     opponent_rating = "",
     notes = "",
     error_tags = [],
+    pgn = ""
 }) {
     const errors = {};
     const trimmedTitle = title.trim();

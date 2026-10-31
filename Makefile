@@ -1,9 +1,10 @@
-.PHONY: install test test-cov lint format run docker-build docker-up docker-down docker-restart docker-logs docker-clean db-upgrade db-downgrade db-current db-history db-migration
+.PHONY: install test test-cov lint format run docker-build docker-up docker-down docker-restart docker-logs docker-clean db-upgrade db-downgrade db-current db-history db-migration frontend-install frontend-dev frontend-lint frontend-format frontend-check frontend-test frontend-test-e2e frontend-build check-all
 
 BACKEND := cd backend
 POETRY := $(BACKEND) && poetry run
 PYTEST := $(POETRY) pytest
 COMPOSE := docker compose
+NPM := npm --prefix frontend
 
 install:
 	$(BACKEND) && poetry install
@@ -56,6 +57,32 @@ db-history:
 db-migration:
 	docker compose run --rm -v "$(CURDIR)/backend/alembic/versions:/app/alembic/versions" api alembic revision --autogenerate -m "$(MSG)"
 
+frontend-install:
+	$(NPM) ci
+
+frontend-dev:
+	$(NPM) run dev
+
+frontend-lint:
+	$(NPM) run lint
+
+frontend-format:
+	$(NPM) run format
+
+frontend-check:
+	$(NPM) run check
+
+frontend-test:
+	$(NPM) run test
+
+frontend-test-e2e:
+	$(NPM) run test:e2e
+
+frontend-build:
+	$(NPM) run build
+
+check-all: lint test frontend-check frontend-test frontend-build frontend-test-e2e
+
 help:
 	@echo "Comandos disponíveis:"
 	@echo "  make install    - instala dependências"
@@ -77,3 +104,14 @@ help:
 	@echo "  make db-current   - mostra a versao atual do banco"
 	@echo "  make db-history   - lista o histórico de migrations"
 	@echo "  make db-migration MSG=\"desc\" - cria uma nova migration"
+	@echo "Comandos Frontend:"
+	@echo "  make frontend-install  - instala as dependências do frontend"
+	@echo "  make frontend-dev      - inicia o frontend local"
+	@echo "  make frontend-lint     - verifica os arquivos do frontend"
+	@echo "  make frontend-format   - formata os arquivos do frontend"
+	@echo "  make frontend-check    - lint + formatacao"
+	@echo "  make frontend-test     - executa os testes do frontend (integração e de unidade)"
+	@echo "  make frontend-test-e2e - executa os testes E2E"
+	@echo "  make frontend-build    - gera o build de produção"
+	@echo "Utils:"
+	@echo "  make check-all         - valida backend e frontend"

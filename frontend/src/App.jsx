@@ -15,8 +15,6 @@ export default function App() {
 
     return (
         <main className="mx-auto min-h-screen w-full max-w-7xl space-y-6 p-4 sm:p-6">
-            <h1 className="text-3xl font-bold">Minhas partidas</h1>
-
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
                 <section aria-labelledby="games-heading" className="space-y-3">
                     <h2 id="games-heading" className="text-xl font-semibold">

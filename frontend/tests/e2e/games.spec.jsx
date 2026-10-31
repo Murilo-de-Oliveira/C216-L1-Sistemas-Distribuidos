@@ -3,10 +3,10 @@ import { expect, test } from "@playwright/test";
 const PGN = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6";
 
 async function fillRequired(page, title) {
-	await page.getByLabel("Título").fill(title);
-	await page.getByLabel("Brancas").check();
-	await page.getByLabel("Vitória").check();
-	await page.getByLabel("Ritmo").selectOption("rapid");
+	await page.getByLabel("Título", { exact: true }).fill(title);
+	await page.getByLabel("Brancas", { exact: true }).check();
+	await page.getByLabel("Vitória", { exact: true }).check();
+	await page.getByLabel("Ritmo", { exact: true }).selectOption("rapid");
 }
 
 test("mostra os erros ao enviar o formulário vazio", async ({ page }) => {
@@ -24,7 +24,7 @@ test("cadastra uma partida e a exibe na lista", async ({ page }) => {
 	await page.goto("/");
 
 	await fillRequired(page, title);
-	await page.getByLabel("Abertura").fill("Ruy Lopez");
+	await page.getByRole("textbox", { name: "Abertura", exact: true }).fill("Ruy Lopez");
 	await page.getByLabel("PGN").fill(PGN);
 	await page.getByRole("button", { name: "Adicionar partida" }).click();
 

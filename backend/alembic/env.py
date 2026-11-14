@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, pool
 from alembic import context
 from app.core.config import DATABASE_URL
 from app.database.base import Base
+from app.models.models import Game # noqa: F401
 
 config = context.config
 

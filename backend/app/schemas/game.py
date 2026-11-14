@@ -36,8 +36,10 @@ def _unique(tags: list[ErrorTag]) -> list[ErrorTag]:
 
 
 class GameBase(BaseModel):
+    title: str | None = None
     color: Color
     result: Result
+    pgn: str
     time_control: TimeControl
     opening: str | None = Field(None, max_length=80, examples=["Siciliana"])
     opponent_rating: int | None = Field(None, ge=0, le=3500, examples=[1450])
@@ -55,8 +57,10 @@ class GameCreate(GameBase):
 
 
 class GamePatch(BaseModel):
+    title: str | None = None
     color: Color | None = None
     result: Result | None = None
+    pgn: str | None = None
     time_control: TimeControl | None = None
     opening: str | None = Field(None, max_length=80)
     opponent_rating: int | None = Field(None, ge=0, le=3500)

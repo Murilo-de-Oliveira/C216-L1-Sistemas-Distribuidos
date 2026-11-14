@@ -11,8 +11,10 @@ class Game(Base):
     __tablename__ = "games"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    title: Mapped[str] = mapped_column(nullable=False)
     color: Mapped[Color]
     result: Mapped[Result] = mapped_column(index=True)
+    pgn: Mapped[str] = mapped_column(nullable=False)
     time_control: Mapped[TimeControl]
     opening: Mapped[str | None] = mapped_column(String(80))
     opponent_rating: Mapped[int | None]

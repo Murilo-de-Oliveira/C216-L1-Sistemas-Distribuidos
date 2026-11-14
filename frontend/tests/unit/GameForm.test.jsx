@@ -73,4 +73,17 @@ describe("GameForm", () => {
 			screen.getByRole("checkbox", { name: "Peça pendurada" }),
 		).not.toBeChecked();
 	});
+
+	it("mantém os valores quando onAdd devolve false (falha ao salvar)", async () => {
+		const user = userEvent.setup();
+		const onAdd = vi.fn().mockResolvedValue(false);
+		render(<GameForm onAdd={onAdd} />);
+
+		await fillRequired(user);
+		await user.click(screen.getByRole("button", { name: "Adicionar partida" }));
+
+		expect(onAdd).toHaveBeenCalledTimes(1);
+		expect(screen.getByLabelText("Título")).toHaveValue("teste");
+		expect(screen.getByRole("radio", { name: "Pretas" })).toBeChecked();
+	});
 });

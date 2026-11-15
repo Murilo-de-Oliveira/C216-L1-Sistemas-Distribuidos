@@ -43,15 +43,15 @@ export function GameForm({ onAdd }) {
 		setForm({ ...form, error_tags: tags });
 	}
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
 		event.preventDefault();
 
 		const result = validateGame(form);
 		setErrors(result.errors);
 		if (Object.keys(result.errors).length > 0) return;
 
-		onAdd(result.values);
-		setForm(EMPTY_VALUES);
+		const saved = await onAdd(result.values);
+		if (saved !== false) setForm(EMPTY_VALUES);
 	}
 
 	return (

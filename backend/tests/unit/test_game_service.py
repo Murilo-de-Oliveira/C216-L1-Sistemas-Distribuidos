@@ -67,7 +67,14 @@ def test_replace_overwrites_fields_and_keeps_played_at(service, game_data):
     assert original.opening is not None  # garante que o teste é significativo
 
     new = service.replace_game(
-        original_id, GameCreate(color="black", result="win", time_control="rapid")
+        original_id,
+        GameCreate(
+            title="title",
+            color="black",
+            result="win",
+            time_control="rapid",
+            pgn="1. e4 e5 2. Nf3 Nc6 3. Bb5 a6",
+        ),
     )
 
     assert new.id == original_id

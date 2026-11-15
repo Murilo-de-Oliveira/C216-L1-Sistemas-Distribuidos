@@ -3,7 +3,13 @@ from pydantic import ValidationError
 
 from app.schemas.game import Color, ErrorTag, GameCreate, GamePatch
 
-REQUIRED = {"color": "white", "result": "win", "time_control": "rapid"}
+REQUIRED = {
+    "title": "title",
+    "color": "white",
+    "result": "win",
+    "time_control": "rapid",
+    "pgn": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6",
+}
 
 
 def test_game_create_uses_defaults_and_converts_enums():

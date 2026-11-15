@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GameForm } from "./components/GameForm";
 import { GameList } from "./components/GameList";
-import { initialGames } from "./seed";
+import { createGame, listGames } from "./services/games";
 
 export default function App() {
-	const [games, setGames] = useState(initialGames);
+	const [games, setGames] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState(null);
+	const [saveError, setSaveError] = useState(null);
 
-	function addGame(values) {
-		setGames((current) => [
-			{
-				id: crypto.randomUUID(),
-				played_at: new Date().toISOString(),
-				...values,
-			},
-			...current,
-		]);
+	useEffect(() => {
+		let ignore = false;
+		listGames()
+			.then((data) => {
+				if (!ignore) setGames(data);
+			})
+			.catch((e) => {
+				if (!ignore) setLoadError(e.message);
+			})
+			.finally(() => {
+				if (!ignore) setLoading(false);
+			});
+		return () => {
+			ignore = true;
+		};
+	}, []);
+
+	async function addGame(values) {
+		setSaveError(null);
+		try {
+			const created = await createGame(values);
+			setGames((current) => [created, ...current]);
+			return true;
+		} catch (e) {
+			setSaveError(e.message);
+			return false;
+		}
 	}
 
 	return (
@@ -24,13 +45,28 @@ export default function App() {
 					<h2 id="games-heading" className="text-xl font-semibold">
 						Partidas cadastradas
 					</h2>
-					<GameList games={games} />
+					{loading && (
+						<p role="status" className="text-slate-600">
+							Carregando partidas...
+						</p>
+					)}
+					{loadError && (
+						<p role="alert" className="text-sm text-destructive">
+							{loadError}
+						</p>
+					)}
+					{!loading && !loadError && <GameList games={games} />}
 				</section>
 
 				<section aria-labelledby="form-heading" className="space-y-3">
 					<h2 id="form-heading" className="text-xl font-semibold">
 						Nova partida
 					</h2>
+					{saveError && (
+						<p role="alert" className="text-sm text-destructive">
+							{saveError}
+						</p>
+					)}
 					<GameForm onAdd={addGame} />
 				</section>
 			</div>

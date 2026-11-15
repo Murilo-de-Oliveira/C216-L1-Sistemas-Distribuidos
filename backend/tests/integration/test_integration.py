@@ -109,7 +109,13 @@ def test_create_game_rejects_invalid_body(client, payload):
 
 def test_put_replaces_the_whole_game(client, create_game):
     game = create_game()
-    new_body = {"title": "title", "color": "black", "result": "win", "time_control": "rapid", "pgn": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6"}
+    new_body = {
+        "title": "title",
+        "color": "black",
+        "result": "win",
+        "time_control": "rapid",
+        "pgn": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6",
+    }
 
     response = client.put(f"/games/{game['id']}", json=new_body)
     assert response.status_code == 200

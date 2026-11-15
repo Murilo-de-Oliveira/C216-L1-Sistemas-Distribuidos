@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import game
 from app.core.config import CORS_ORIGINS
+from app.routers import game
+
 
 def create_app() -> FastAPI:
     app = FastAPI(

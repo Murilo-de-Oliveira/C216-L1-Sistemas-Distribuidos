@@ -32,5 +32,5 @@ def payload() -> dict:
         "opponent_rating": 1350,
         "notes": "Perdi no tempo.",
         "error_tags": ["time_trouble"],
-        "pgn": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6"
+        "pgn": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6",
     }

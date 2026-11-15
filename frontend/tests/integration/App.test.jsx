@@ -74,7 +74,7 @@ async function submit(user) {
 
 describe("App: carregamento da lista", () => {
 	it("mostra o estado de carregando enquanto o GET não responde", () => {
-		fetchMock.mockReturnValue(new Promise(() => { })); // nunca resolve
+		fetchMock.mockReturnValue(new Promise(() => {})); // nunca resolve
 		render(<App />);
 
 		expect(screen.getByText(LOADING_TEXT)).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe("App: carregamento da lista", () => {
 	});
 
 	it("mostra o estado de carregando enquanto o GET não responde", () => {
-		fetchMock.mockReturnValue(new Promise(() => { }));
+		fetchMock.mockReturnValue(new Promise(() => {}));
 		render(<App />);
 
 		expect(screen.getByRole("status")).toHaveTextContent(LOADING_TEXT);
@@ -125,7 +125,9 @@ describe("App: carregamento da lista", () => {
 		);
 		render(<App />);
 
-		expect(await screen.findByRole("alert")).toHaveTextContent("Falha no servidor");
+		expect(await screen.findByRole("alert")).toHaveTextContent(
+			"Falha no servidor",
+		);
 		expect(screen.queryByRole("status")).not.toBeInTheDocument();
 		expect(screen.queryByText(EMPTY_TEXT)).not.toBeInTheDocument();
 	});
@@ -134,7 +136,9 @@ describe("App: carregamento da lista", () => {
 		fetchMock.mockRejectedValueOnce(new Error("Failed to fetch"));
 		render(<App />);
 
-		expect(await screen.findByRole("alert")).toHaveTextContent("Failed to fetch");
+		expect(await screen.findByRole("alert")).toHaveTextContent(
+			"Failed to fetch",
+		);
 		expect(screen.queryByText(EMPTY_TEXT)).not.toBeInTheDocument();
 	});
 });
@@ -235,8 +239,12 @@ describe("App: cadastro de partida", () => {
 		await renderLoaded();
 
 		fetchMock
-			.mockResolvedValueOnce(jsonResponse(makeGame({ id: 1, title: "Primeira" }), 201))
-			.mockResolvedValueOnce(jsonResponse(makeGame({ id: 2, title: "Segunda" }), 201));
+			.mockResolvedValueOnce(
+				jsonResponse(makeGame({ id: 1, title: "Primeira" }), 201),
+			)
+			.mockResolvedValueOnce(
+				jsonResponse(makeGame({ id: 2, title: "Segunda" }), 201),
+			);
 
 		await fillRequired(user, "Primeira");
 		await submit(user);
@@ -266,8 +274,11 @@ describe("App: cadastro de partida", () => {
 		);
 		expect(screen.getByLabelText("Título")).toHaveValue("Não salva");
 		expect(screen.getByRole("radio", { name: "Brancas" })).toBeChecked();
-		expect(screen.queryByText("Não salva", { selector: "h3, [data-slot='card-title']" }))
-			.not.toBeInTheDocument();
+		expect(
+			screen.queryByText("Não salva", {
+				selector: "h3, [data-slot='card-title']",
+			}),
+		).not.toBeInTheDocument();
 		expect(screen.getByText(EMPTY_TEXT)).toBeInTheDocument();
 	});
 
@@ -277,7 +288,9 @@ describe("App: cadastro de partida", () => {
 
 		fetchMock
 			.mockResolvedValueOnce(jsonResponse({ detail: "Falhou" }, 500))
-			.mockResolvedValueOnce(jsonResponse(makeGame({ id: 1, title: "Dessa vez" }), 201));
+			.mockResolvedValueOnce(
+				jsonResponse(makeGame({ id: 1, title: "Dessa vez" }), 201),
+			);
 
 		await fillRequired(user, "Dessa vez");
 		await submit(user);

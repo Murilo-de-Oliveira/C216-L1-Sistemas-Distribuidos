@@ -12,5 +12,5 @@ def get_all_user_route(session: SessionDep):
     return service.get_all_heroes(session)
 
 @router.get("/{id}", response_model=Hero)
-def get_user_route(id: str, session: SessionDep):
+def get_user_route(id: int, session: SessionDep):
     return service.get_hero_by_id(id, session)

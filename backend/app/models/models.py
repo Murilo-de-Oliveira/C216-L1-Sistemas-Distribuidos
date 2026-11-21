@@ -8,13 +8,9 @@ class Hero(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False)
     hero_type: Mapped[str]
-    gun_tag: Mapped[str] 
     complexity: Mapped[int]
     lore: Mapped[str]
-    role: Mapped[str]
-    playstyle: Mapped[str]
     tags:  Mapped[list[str]] = mapped_column(JSON, default=list)
-    hideout_rich_presence: Mapped[str]
     icon_url: Mapped[str]
     color_ui: Mapped[str]
     color_style: Mapped[str]

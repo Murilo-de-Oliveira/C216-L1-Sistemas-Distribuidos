@@ -1,5 +1,5 @@
 from app.database.connection import Session
-from app.models.models import Hero, Item
+from app.models.models import Hero, Item, Build, BuildItem
 from sqlalchemy import select
 
 def get_hero_by_id(id: int, session: Session) -> Hero | None:
@@ -13,3 +13,17 @@ def get_item_by_id(id: int, session: Session) -> Item | None:
 
 def get_all_items(session: Session) -> list[Item]:
     return list(session.scalars(select(Item)).all())
+
+def create_build(build: Build, session: Session) -> Build:
+    session.add(build)
+    session.flush()
+    session.commit()
+    return build
+
+def get_build(id: int, session: Session) -> Build:
+    return session.get(Build, id)
+
+def delete_build(id: int, session: Session) -> None:
+    build = session.get(Build, id)
+    session.delete(build)
+    session.commit()

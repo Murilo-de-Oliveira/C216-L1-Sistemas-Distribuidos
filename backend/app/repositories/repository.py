@@ -6,7 +6,7 @@ def get_hero_by_id(id: int, session: Session) -> Hero | None:
     return session.get(Hero, id)
 
 def get_all_heroes(session: Session) -> list[Hero]:
-    return list(session.scalars(select(Hero)).all())
+    return list(session.scalars(select(Hero).order_by(Hero.name)).all())
 
 def get_item_by_id(id: int, session: Session) -> Item | None:
     return session.get(Item, id)

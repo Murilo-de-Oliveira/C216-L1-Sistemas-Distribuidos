@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { fetchHeroes } from "../api/heroes.js";
 
 export default function Home() {
     const [heroes, setHeroes] = useState([]);
-    const [status, setStatus] = useState("loading"); // loading | error | ready
+    const [status, setStatus] = useState("loading");
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -39,19 +40,21 @@ export default function Home() {
             {status === "ready" && heroes.length > 0 && (
                 <ul className="hero-grid">
                     {heroes.map((hero) => (
-                        <li
-                            key={hero.id}
-                            className="hero-card"
-                            style={{ "--hero-color": hero.color_style }}
-                        >
-                            <img
-                                src={hero.icon_url}
-                                alt=""
-                                width="96"
-                                height="96"
-                                loading="lazy"
-                            />
-                            <strong>{hero.name}</strong>
+                        <li key={hero.id}>
+                            <Link
+                                to={`/heroes/${hero.id}`}
+                                className="hero-card"
+                                style={{ "--hero-color": hero.color_style }}
+                            >
+                                <img
+                                    src={hero.icon_url}
+                                    alt=""
+                                    width="96"
+                                    height="96"
+                                    loading="lazy"
+                                />
+                                <strong>{hero.name}</strong>
+                            </Link>
                         </li>
                     ))}
                 </ul>

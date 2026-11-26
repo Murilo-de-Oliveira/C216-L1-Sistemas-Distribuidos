@@ -51,6 +51,7 @@ body {
 }
 
 .hero-type {
+  font-size: 0.8rem;
   text-transform: capitalize;
   color: #9a9ca3;
 }
@@ -115,4 +116,154 @@ body {
 .build-items {
   padding-left: 1.25rem;
   columns: 2;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button-link,
+button.primary {
+  padding: 0.5rem 1rem;
+  color: #fff;
+  font: inherit;
+  text-decoration: none;
+  background: #3b6fd4;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.build-form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.build-form input,
+.build-form textarea,
+.build-form select {
+  padding: 0.5rem;
+  color: inherit;
+  font: inherit;
+  background: #1d2026;
+  border: 1px solid #2a2e36;
+  border-radius: 6px;
+}
+
+.form-columns {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.picker-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.picker-filters input {
+  flex: 1 1 160px;
+}
+
+.picker-list,
+.selected-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.picker-list {
+  display: grid;
+  gap: 0.35rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.35rem 0.6rem;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  background: #1d2026;
+  border: 1px solid #2a2e36;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.picker-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.picker-name {
+  flex: 1;
+}
+
+.picker-meta {
+  font-size: 0.8rem;
+  color: #9a9ca3;
+}
+
+.selected-list {
+  display: grid;
+  gap: 0.35rem;
+  counter-reset: step;
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: #1d2026;
+  border: 1px solid #2a2e36;
+  border-radius: 6px;
+  counter-increment: step;
+}
+
+.selected-item::before {
+  content: counter(step);
+  color: #9a9ca3;
+}
+
+.selected-name {
+  flex: 1;
+}
+
+.selected-actions button {
+  margin-left: 0.2rem;
+  color: inherit;
+  background: #2a2e36;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.selected-actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+[role="alert"] {
+  color: #ff7b72;
+}
+
+@media (max-width: 720px) {
+  .form-columns {
+    grid-template-columns: 1fr;
+  }
 }

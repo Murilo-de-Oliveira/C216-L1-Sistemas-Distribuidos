@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 
 from app.schemas.build import BuildCreate, BuildUpdate
-from app.models.models import Build, BuildItem
-from app.repositories.repository import create_build, get_build, delete_build
+from app.models.models import Build, BuildItem, Item
+from app.repositories.repository import create_build, get_build, delete_build, list_build_by_hero, get_all_items
 from app.database.connection import Session
 
 
@@ -45,3 +45,10 @@ def delete_build_service(id: int, session: Session) -> bool:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Não foi possível buscar a build: {e}")
 
+
+def list_build_by_hero_service(id: int, session: Session) -> list[Build]:
+    return list_build_by_hero(id, session)
+
+
+def list_all_items_service(session: Session) -> list[Item]:
+    return get_all_items(session)

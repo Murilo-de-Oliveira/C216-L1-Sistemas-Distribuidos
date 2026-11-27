@@ -3,11 +3,23 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     plugins: [react()],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
+    },
+    test: {
+        environment: "jsdom",
+        globals: true,
+        setupFiles: "./tests/setup.js",
+        include: [
+            "tests/unit/**/*.test.{js,jsx}",
+            "tests/integration/**/*.test.{js,jsx}",
+        ],
+    },
     server: {
         port: 5173,
         proxy: {
-            // o frontend chama /api/heroes e o Vite repassa para o FastAPI em /heroes
-            // (evita configurar CORS no backend durante o desenvolvimento)
             "/api": {
                 target: "http://localhost:8000",
                 changeOrigin: true,

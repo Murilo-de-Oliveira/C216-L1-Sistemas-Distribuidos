@@ -9,9 +9,8 @@ export default defineConfig({
         trace: "on-first-retry",
     },
     projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-    // sobe o Vite automaticamente antes dos testes
     webServer: {
-        command: "npm run dev",
+        command: "npm run dev -- --port 5173",
         url: "http://localhost:5173",
         reuseExistingServer: true,
     },
